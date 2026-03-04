@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🐻🎮 ZIGH & RAHV // BIRTHDAY 2026</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Luckiest+Guy&display=swap');
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Press Start 2P', cursive;
+            overflow-x: hidden;
+        }
+        .container {
+            text-align: center;
+            padding: 40px;
+            max-width: 1000px;
+        }
+        .header {
+            margin-bottom: 50px;
+        }
+        .header h1 {
+            font-size: 36px;
+            background: linear-gradient(45deg, #ff6b35, #ffd700);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 20px;
+            text-shadow: 4px 4px 0 rgba(0,0,0,0.3);
+            animation: pulse 2s ease-in-out infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+        .header p {
+            font-family: 'Luckiest Guy', cursive;
+            font-size: 24px;
+            color: #fff;
+            text-shadow: 2px 2px 0 #000;
+        }
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+            margin-bottom: 50px;
+        }
+        .card {
+            background: linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0.05));
+            border: 4px solid;
+            border-radius: 20px;
+            padding: 40px 30px;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+        .card:hover {
+            transform: translateY(-10px) scale(1.02);
+        }
+        .card-zigh {
+            border-color: #ff6b35;
+            box-shadow: 0 0 30px rgba(255, 107, 53, 0.3);
+        }
+        .card-zigh:hover {
+            box-shadow: 0 0 50px rgba(255, 107, 53, 0.6);
+        }
+        .card-rahv {
+            border-color: #00ff00;
+            box-shadow: 0 0 30px rgba(0, 255, 0, 0.3);
+        }
+        .card-rahv:hover {
+            box-shadow: 0 0 50px rgba(0, 255, 0, 0.6);
+        }
+        .card-dual {
+            border-image: linear-gradient(45deg, #ff6b35, #00ff00) 1;
+            box-shadow: 0 0 30px rgba(255, 255, 255, 0.2);
+        }
+        .card-dual:hover {
+            box-shadow: 0 0 50px rgba(255, 255, 255, 0.4);
+        }
+        .card-icon {
+            font-size: 64px;
+            margin-bottom: 20px;
+        }
+        .card h2 {
+            font-size: 24px;
+            margin-bottom: 15px;
+        }
+        .card-zigh h2 { color: #ff6b35; }
+        .card-rahv h2 { color: #00ff00; }
+        .card-dual h2 { 
+            background: linear-gradient(45deg, #ff6b35, #00ff00);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .card p {
+            font-family: 'Luckiest Guy', cursive;
+            font-size: 18px;
+            color: #aaa;
+            margin-bottom: 20px;
+        }
+        .card .tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+        }
+        .tag {
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 10px;
+            font-family: 'Press Start 2P', cursive;
+        }
+        .card-zigh .tag { background: rgba(255, 107, 53, 0.2); color: #ff6b35; border: 1px solid #ff6b35; }
+        .card-rahv .tag { background: rgba(0, 255, 0, 0.2); color: #00ff00; border: 1px solid #00ff00; }
+        .card-dual .tag { background: rgba(255, 255, 255, 0.1); color: #fff; border: 1px solid #fff; }
+        .footer {
+            margin-top: 40px;
+            padding-top: 30px;
+            border-top: 2px solid rgba(255,255,255,0.1);
+        }
+        .footer p {
+            color: #666;
+            font-size: 12px;
+            line-height: 2;
+        }
+        .footer .signature {
+            color: #ff6b35;
+            margin-top: 10px;
+        }
+        .age-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #ff6b35, #ffd700);
+            color: #000;
+            padding: 10px 20px;
+            border-radius: 10px;
+            font-size: 14px;
+            margin-top: 20px;
+            font-family: 'Luckiest Guy', cursive;
+        }
+        @media (max-width: 768px) {
+            .header h1 { font-size: 24px; }
+            .card h2 { font-size: 18px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎂 BIRTHDAY 2026 🎂</h1>
+            <p>Choose Your Adventure!</p>
+            <div class="age-badge">🎮 Ages 11-12 🎮</div>
+        </div>
+
+        <div class="cards">
+            <a href="zigh/security_office.html" class="card card-zigh">
+                <div class="card-icon">🐻</div>
+                <h2>ZIGH</h2>
+                <p>FNAF Security Office<br>Survive the Night!</p>
+                <div class="tags">
+                    <span class="tag">FNAF</span>
+                    <span class="tag">CAMERAS</span>
+                    <span class="tag">JUMPSCARES</span>
+                </div>
+            </a>
+
+            <a href="rahv/obby_adventure.html" class="card card-rahv">
+                <div class="card-icon">🏃</div>
+                <h2>RAHV</h2>
+                <p>Roblox Obby Adventure<br>Jump & Collect!</p>
+                <div class="tags">
+                    <span class="tag">ROBLOX</span>
+                    <span class="tag">OBBY</span>
+                    <span class="tag">COINS</span>
+                </div>
+            </a>
+
+            <a href="shared/fusion_zone.html" class="card card-dual">
+                <div class="card-icon">⚡</div>
+                <h2>FUSION ZONE</h2>
+                <p>Both Games Combined!<br>Collect & Survive!</p>
+                <div class="tags">
+                    <span class="tag">FNAF</span>
+                    <span class="tag">ROBLOX</span>
+                    <span class="tag">FUSION</span>
+                </div>
+            </a>
+        </div>
+
+        <div class="footer">
+            <p>Made with 🎮 & 🐻 for two awesome gamers</p>
+            <p class="signature">From the 13th hour // frankSx</p>
+            <p style="margin-top: 20px; font-size: 10px; color: #444;">No personal data collected • Pure HTML/JS fun</p>
+        </div>
+    </div>
+</body>
+</html>

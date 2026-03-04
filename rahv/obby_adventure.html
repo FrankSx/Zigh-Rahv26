@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎮 RAHV // OBBY ADVENTURE // ROBLOX STYLE</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Luckiest+Guy&family=Nunito:wght@400;700&display=swap');
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background: linear-gradient(180deg, #87CEEB 0%, #E0F6FF 50%, #98FB98 50%, #228B22 100%);
+            font-family: 'Nunito', sans-serif;
+            overflow: hidden;
+            cursor: crosshair;
+        }
+        #game-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 1;
+        }
+        .ui-layer {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 10;
+            pointer-events: none;
+        }
+        .robux-counter {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: linear-gradient(135deg, #00ff00, #00aa00);
+            border: 4px solid #fff;
+            border-radius: 15px;
+            padding: 10px 20px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-family: 'Luckiest Guy', cursive;
+            font-size: 24px;
+            color: #fff;
+            text-shadow: 2px 2px 0 #000;
+            pointer-events: auto;
+        }
+        .robux-icon {
+            width: 30px;
+            height: 30px;
+            background: linear-gradient(135deg, #ffd700, #ffaa00);
+            border-radius: 50%;
+            border: 3px solid #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+        }
+        .level-indicator {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: linear-gradient(135deg, #ff6b6b, #ff4444);
+            border: 4px solid #fff;
+            border-radius: 15px;
+            padding: 10px 20px;
+            font-family: 'Luckiest Guy', cursive;
+            font-size: 20px;
+            color: #fff;
+            text-shadow: 2px 2px 0 #000;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        }
+        .controls-hint {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0,0,0,0.7);
+            color: #fff;
+            padding: 15px 30px;
+            border-radius: 10px;
+            font-size: 16px;
+            text-align: center;
+            font-family: 'Nunito', sans-serif;
+            font-weight: bold;
+        }
+        .start-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 30px;
+        }
+        .start-screen h1 {
+            font-family: 'Luckiest Guy', cursive;
+            font-size: 64px;
+            color: #fff;
+            text-shadow: 4px 4px 0 #000;
+            text-align: center;
+            animation: bounce 2s infinite;
+        }
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+        .start-btn {
+            padding: 20px 60px;
+            background: linear-gradient(135deg, #00ff00, #00aa00);
+            border: 5px solid #fff;
+            border-radius: 20px;
+            color: #fff;
+            font-family: 'Luckiest Guy', cursive;
+            font-size: 32px;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            text-shadow: 2px 2px 0 #000;
+        }
+        .start-btn:hover {
+            transform: scale(1.1) rotate(-2deg);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.4);
+        }
+        .birthday-message {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            z-index: 100;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 1s;
+        }
+        .birthday-message.show {
+            opacity: 1;
+        }
+        .birthday-message h1 {
+            font-family: 'Luckiest Guy', cursive;
+            font-size: 72px;
+            color: #ff6b6b;
+            text-shadow: 
+                4px 4px 0 #fff,
+                8px 8px 0 #000;
+            margin-bottom: 20px;
+            animation: wobble 1s infinite;
+        }
+        @keyframes wobble {
+            0%, 100% { transform: rotate(-3deg); }
+            50% { transform: rotate(3deg); }
+        }
+        .birthday-message p {
+            font-size: 32px;
+            color: #fff;
+            text-shadow: 2px 2px 0 #000;
+            font-family: 'Luckiest Guy', cursive;
+        }
+        .cloud {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 100px;
+            opacity: 0.8;
+        }
+        .cloud::before {
+            content: '';
+            position: absolute;
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 100px;
+        }
+    </style>
+</head>
+<body>
+    <div class="start-screen" id="start-screen">
+        <h1>🏃 RAHV'S OBBY<br>ADVENTURE 🏃</h1>
+        <p style="color: #fff; font-size: 24px; text-align: center; max-width: 600px; line-height: 1.5;">
+            Jump across platforms!<br>
+            Collect coins!<br>
+            Reach the finish!
+        </p>
+        <button class="start-btn" onclick="startGame()">PLAY NOW!</button>
+        <p style="color: #fff; font-size: 18px; margin-top: 20px;">Use ARROW KEYS or CLICK to move and jump</p>
+    </div>
+
+    <canvas id="game-canvas"></canvas>
+
+    <div class="ui-layer">
+        <div class="level-indicator">LEVEL: BIRTHDAY SPECIAL</div>
+        <div class="robux-counter">
+            <div class="robux-icon">R</div>
+            <span id="coin-count">0</span>
+        </div>
+        <div class="controls-hint">
+            ⬅️ ➡️ Move | SPACE or CLICK to Jump | Collect 🪙 | Avoid 🔴
+        </div>
+    </div>
+
+    <div class="birthday-message" id="birthday-msg">
+        <h1>HAPPY BIRTHDAY<br>RAHV!</h1>
+        <p>You completed the obby!</p>
+        <p style="font-size: 24px; margin-top: 20px;">🎮🎂🏆 2026 🏆🎂🎮</p>
+        <p style="font-size: 16px; margin-top: 10px; color: #ccc;">From the 13th hour // frankSx</p>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('game-canvas');
+        const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        let gameStarted = false;
+        let coins = 0;
+        let gameWon = false;
+
+        // Game objects
+        let player = { x: 100, y: canvas.height - 200, width: 40, height: 40, vx: 0, vy: 0, jumping: false, color: '#ff6b6b' };
+        let platforms = [];
+        let coinObjects = [];
+        let obstacles = [];
+        let clouds = [];
+        let particles = [];
+
+        // Initialize level
+        function initLevel() {
+            platforms = [
+                { x: 50, y: canvas.height - 100, width: 200, height: 20, color: '#8B4513' },
+                { x: 300, y: canvas.height - 200, width: 100, height: 20, color: '#8B4513' },
+                { x: 450, y: canvas.height - 300, width: 100, height: 20, color: '#8B4513' },
+                { x: 600, y: canvas.height - 250, width: 100, height: 20, color: '#8B4513' },
+                { x: 750, y: canvas.height - 350, width: 100, height: 20, color: '#8B4513' },
+                { x: 900, y: canvas.height - 300, width: 100, height: 20, color: '#8B4513' },
+                { x: 1050, y: canvas.height - 400, width: 150, height: 20, color: '#FFD700' },
+            ];
+
+            coinObjects = [
+                { x: 340, y: canvas.height - 250, collected: false },
+                { x: 490, y: canvas.height - 350, collected: false },
+                { x: 640, y: canvas.height - 300, collected: false },
+                { x: 790, y: canvas.height - 400, collected: false },
+                { x: 940, y: canvas.height - 350, collected: false },
+                { x: 1125, y: canvas.height - 450, collected: false },
+            ];
+
+            obstacles = [
+                { x: 380, y: canvas.height - 240, width: 30, height: 30 },
+                { x: 680, y: canvas.height - 290, width: 30, height: 30 },
+                { x: 980, y: canvas.height - 340, width: 30, height: 30 },
+            ];
+
+            // Create clouds
+            for (let i = 0; i < 5; i++) {
+                clouds.push({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * (canvas.height / 2),
+                    width: 100 + Math.random() * 50,
+                    speed: 0.2 + Math.random() * 0.3
+                });
+            }
+        }
+
+        function startGame() {
+            document.getElementById('start-screen').style.display = 'none';
+            gameStarted = true;
+            initLevel();
+            gameLoop();
+        }
+
+        // Input handling
+        let keys = {};
+        window.addEventListener('keydown', (e) => {
+            keys[e.key] = true;
+            if (e.key === ' ' || e.key === 'ArrowUp') jump();
+        });
+        window.addEventListener('keyup', (e) => keys[e.key] = false);
+
+        canvas.addEventListener('click', () => {
+            if (gameStarted) jump();
+        });
+
+        canvas.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            if (gameStarted) jump();
+        });
+
+        function jump() {
+            if (!player.jumping) {
+                player.vy = -15;
+                player.jumping = true;
+                // Create jump particles
+                for (let i = 0; i < 5; i++) {
+                    particles.push({
+                        x: player.x + player.width/2,
+                        y: player.y + player.height,
+                        vx: (Math.random() - 0.5) * 4,
+                        vy: Math.random() * -3,
+                        life: 1,
+                        color: '#fff'
+                    });
+                }
+            }
+        }
+
+        function update() {
+            if (!gameStarted || gameWon) return;
+
+            // Movement
+            if (keys['ArrowLeft']) player.vx = -5;
+            else if (keys['ArrowRight']) player.vx = 5;
+            else player.vx *= 0.8;
+
+            player.x += player.vx;
+            player.y += player.vy;
+            player.vy += 0.8; // Gravity
+
+            // Platform collision
+            player.jumping = true;
+            platforms.forEach(plat => {
+                if (player.x < plat.x + plat.width &&
+                    player.x + player.width > plat.x &&
+                    player.y + player.height > plat.y &&
+                    player.y + player.height < plat.y + plat.height + 20 &&
+                    player.vy > 0) {
+                    player.y = plat.y - player.height;
+                    player.vy = 0;
+                    player.jumping = false;
+                }
+            });
+
+            // Ground collision
+            if (player.y > canvas.height - 50) {
+                player.y = canvas.height - 200;
+                player.x = 100;
+                player.vy = 0;
+            }
+
+            // Screen bounds
+            if (player.x < 0) player.x = 0;
+            if (player.x > canvas.width - player.width) player.x = canvas.width - player.width;
+
+            // Coin collection
+            coinObjects.forEach(coin => {
+                if (!coin.collected &&
+                    player.x < coin.x + 20 &&
+                    player.x + player.width > coin.x &&
+                    player.y < coin.y + 20 &&
+                    player.y + player.height > coin.y) {
+                    coin.collected = true;
+                    coins++;
+                    document.getElementById('coin-count').textContent = coins;
+                    // Sparkle effect
+                    for (let i = 0; i < 8; i++) {
+                        particles.push({
+                            x: coin.x + 10,
+                            y: coin.y + 10,
+                            vx: (Math.random() - 0.5) * 6,
+                            vy: (Math.random() - 0.5) * 6,
+                            life: 1,
+                            color: '#FFD700'
+                        });
+                    }
+                }
+            });
+
+            // Obstacle collision (reset)
+            obstacles.forEach(obs => {
+                if (player.x < obs.x + obs.width &&
+                    player.x + player.width > obs.x &&
+                    player.y < obs.y + obs.height &&
+                    player.y + player.height > obs.y) {
+                    player.x = 100;
+                    player.y = canvas.height - 200;
+                    player.vy = 0;
+                }
+            });
+
+            // Win condition (reach final platform)
+            if (player.x > 1100 && player.y < canvas.height - 350) {
+                gameWon = true;
+                document.getElementById('birthday-msg').classList.add('show');
+            }
+
+            // Update clouds
+            clouds.forEach(cloud => {
+                cloud.x += cloud.speed;
+                if (cloud.x > canvas.width) cloud.x = -cloud.width;
+            });
+
+            // Update particles
+            particles = particles.filter(p => {
+                p.x += p.vx;
+                p.y += p.vy;
+                p.life -= 0.02;
+                return p.life > 0;
+            });
+        }
+
+        function draw() {
+            // Clear
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Draw clouds
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
+            clouds.forEach(cloud => {
+                ctx.beginPath();
+                ctx.arc(cloud.x + 30, cloud.y + 30, 30, 0, Math.PI * 2);
+                ctx.arc(cloud.x + 70, cloud.y + 30, 40, 0, Math.PI * 2);
+                ctx.arc(cloud.x + 110, cloud.y + 30, 30, 0, Math.PI * 2);
+                ctx.fill();
+            });
+
+            // Draw platforms
+            platforms.forEach(plat => {
+                ctx.fillStyle = plat.color;
+                ctx.fillRect(plat.x, plat.y, plat.width, plat.height);
+                // Grass top
+                ctx.fillStyle = '#228B22';
+                ctx.fillRect(plat.x, plat.y, plat.width, 5);
+            });
+
+            // Draw coins
+            coinObjects.forEach(coin => {
+                if (!coin.collected) {
+                    ctx.font = '30px Arial';
+                    ctx.fillText('🪙', coin.x, coin.y + 25);
+                }
+            });
+
+            // Draw obstacles
+            obstacles.forEach(obs => {
+                ctx.font = '30px Arial';
+                ctx.fillText('🔴', obs.x, obs.y + 25);
+            });
+
+            // Draw player (blocky avatar style)
+            ctx.fillStyle = player.color;
+            ctx.fillRect(player.x, player.y, player.width, player.height);
+            // Eyes
+            ctx.fillStyle = '#fff';
+            ctx.fillRect(player.x + 5, player.y + 8, 10, 10);
+            ctx.fillRect(player.x + 25, player.y + 8, 10, 10);
+            ctx.fillStyle = '#000';
+            ctx.fillRect(player.x + 8, player.y + 10, 4, 4);
+            ctx.fillRect(player.x + 28, player.y + 10, 4, 4);
+            // Smile
+            ctx.fillRect(player.x + 10, player.y + 25, 20, 4);
+
+            // Draw particles
+            particles.forEach(p => {
+                ctx.globalAlpha = p.life;
+                ctx.fillStyle = p.color;
+                ctx.fillRect(p.x, p.y, 6, 6);
+            });
+            ctx.globalAlpha = 1;
+
+            // Draw finish flag
+            ctx.font = '60px Arial';
+            ctx.fillText('🏁', 1150, canvas.height - 480);
+        }
+
+        function gameLoop() {
+            update();
+            draw();
+            requestAnimationFrame(gameLoop);
+        }
+
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            if (gameStarted) initLevel();
+        });
+    </script>
+</body>
+</html>

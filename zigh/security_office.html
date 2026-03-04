@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🐻 ZIGH // SECURITY OFFICE</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=VT323&family=Press+Start+2P&display=swap');
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background: #0a0a0a;
+            color: #ff6b35;
+            font-family: 'VT323', monospace;
+            overflow: hidden;
+            cursor: crosshair;
+        }
+        #game-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 1;
+        }
+        .ui-layer {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 10;
+            pointer-events: none;
+        }
+        .security-panel {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: linear-gradient(180deg, #1a1a2e 0%, #0f0f1e 100%);
+            border: 4px solid #4a4a6a;
+            border-radius: 10px;
+            padding: 20px 40px;
+            box-shadow: 0 0 20px rgba(255, 107, 53, 0.3);
+            pointer-events: auto;
+        }
+        .panel-title {
+            font-family: 'Press Start 2P', cursive;
+            font-size: 14px;
+            color: #ff6b35;
+            text-align: center;
+            margin-bottom: 15px;
+            text-shadow: 0 0 10px #ff6b35;
+        }
+        .camera-buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+        }
+        .cam-btn {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(180deg, #2a2a4e 0%, #1a1a2e 100%);
+            border: 3px solid #4a4a6a;
+            border-radius: 10px;
+            color: #ff6b35;
+            font-family: 'Press Start 2P', cursive;
+            font-size: 10px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .cam-btn:hover, .cam-btn.active {
+            border-color: #ff6b35;
+            box-shadow: 0 0 15px rgba(255, 107, 53, 0.5);
+        }
+        .night-counter {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-family: 'Press Start 2P', cursive;
+            font-size: 16px;
+            color: #ff6b35;
+            text-shadow: 0 0 10px #ff6b35;
+            text-align: right;
+        }
+        .time-display {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            font-family: 'Press Start 2P', cursive;
+            font-size: 24px;
+            color: #ffff00;
+            text-shadow: 0 0 10px #ffff00;
+        }
+        .static-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 5;
+            opacity: 0.1;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+            animation: static 0.2s steps(3) infinite;
+        }
+        @keyframes static {
+            0%, 100% { transform: translate(0, 0); }
+            33% { transform: translate(-2px, 2px); }
+            66% { transform: translate(2px, -2px); }
+        }
+        .animatronic {
+            position: absolute;
+            font-size: 60px;
+            cursor: pointer;
+            transition: all 0.3s;
+            filter: drop-shadow(0 0 10px rgba(255, 0, 0, 0.5));
+            z-index: 2;
+        }
+        .door-controls {
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            pointer-events: auto;
+        }
+        .door-btn {
+            width: 80px;
+            height: 100px;
+            background: linear-gradient(180deg, #3a3a5e 0%, #2a2a4e 100%);
+            border: 3px solid #5a5a7a;
+            border-radius: 10px;
+            color: #ff6b35;
+            font-family: 'Press Start 2P', cursive;
+            font-size: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .door-btn.closed {
+            background: linear-gradient(180deg, #ff6b35 0%, #ff8c42 100%);
+            color: #000;
+        }
+        .birthday-message {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            z-index: 100;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 1s;
+        }
+        .birthday-message.show {
+            opacity: 1;
+        }
+        .birthday-message h1 {
+            font-family: 'Press Start 2P', cursive;
+            font-size: 36px;
+            color: #ff6b35;
+            text-shadow: 0 0 20px #ff6b35;
+            margin-bottom: 20px;
+            animation: glitch 2s infinite;
+        }
+        @keyframes glitch {
+            0%, 100% { transform: translate(0); }
+            20% { transform: translate(-2px, 2px); }
+            40% { transform: translate(2px, -2px); }
+        }
+        .start-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #000;
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 30px;
+        }
+        .start-btn {
+            padding: 20px 40px;
+            background: linear-gradient(180deg, #ff6b35 0%, #ff8c42 100%);
+            border: 4px solid #ffff00;
+            border-radius: 10px;
+            color: #000;
+            font-family: 'Press Start 2P', cursive;
+            font-size: 18px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .start-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 50px rgba(255, 107, 53, 0.8);
+        }
+    </style>
+</head>
+<body>
+    <div class="start-screen" id="start-screen">
+        <h1 style="font-family: 'Press Start 2P'; color: #ff6b35; font-size: 32px; text-align: center; line-height: 1.5;">
+            FREDDY FAZBEAR'S<br>PIZZERIA
+        </h1>
+        <p style="color: #ff6b35; font-family: 'VT323'; font-size: 24px;">SECURITY OFFICE PROTOCOL</p>
+        <button class="start-btn" onclick="startGame()">START NIGHT SHIFT</button>
+        <p style="color: #666; font-family: 'VT323'; font-size: 16px;">Help wanted: Security guard needed for night shift</p>
+    </div>
+
+    <canvas id="game-canvas"></canvas>
+    <div class="static-overlay"></div>
+
+    <div class="ui-layer">
+        <div class="time-display" id="time">12:00 AM</div>
+        <div class="night-counter">NIGHT 5<br><span style="font-size: 10px;">BIRTHDAY</span></div>
+
+        <div class="door-controls">
+            <button class="door-btn" id="left-door" onclick="toggleDoor('left')">LEFT<br>DOOR</button>
+            <button class="door-btn" id="right-door" onclick="toggleDoor('right')">RIGHT<br>DOOR</button>
+        </div>
+
+        <div class="security-panel">
+            <div class="panel-title">CAMERA SYSTEM</div>
+            <div class="camera-buttons">
+                <button class="cam-btn active" onclick="switchCam(1)">CAM<br>01</button>
+                <button class="cam-btn" onclick="switchCam(2)">CAM<br>02</button>
+                <button class="cam-btn" onclick="switchCam(3)">CAM<br>03</button>
+                <button class="cam-btn" onclick="switchCam(4)">CAM<br>04</button>
+                <button class="cam-btn" onclick="switchCam(5)">CAM<br>05</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="birthday-message" id="birthday-msg">
+        <h1>HAPPY BIRTHDAY<br>ZIGH!</h1>
+        <p style="font-size: 24px; color: #ffff00; text-shadow: 0 0 10px #ffff00;">You survived the night!</p>
+        <p style="font-size: 18px; margin-top: 20px; color: #ff6b35;">🐻🎂🎮 2026 🎮🎂🐻</p>
+        <p style="font-size: 14px; margin-top: 10px; color: #888;">From the 13th hour // frankSx</p>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('game-canvas');
+        const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        let gameStarted = false;
+        let time = 0;
+        let currentCam = 1;
+        let leftDoorClosed = false;
+        let rightDoorClosed = false;
+        let animatronics = [];
+        let particles = [];
+        const characters = ['🐻', '🐰', '🐔', '🦊', '🤖'];
+
+        class Animatronic {
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.char = characters[Math.floor(Math.random() * characters.length)];
+                this.vx = (Math.random() - 0.5) * 2;
+                this.vy = (Math.random() - 0.5) * 2;
+                this.visible = false;
+                this.timer = Math.random() * 300;
+            }
+            update() {
+                this.timer--;
+                if (this.timer <= 0) {
+                    this.visible = !this.visible;
+                    this.timer = Math.random() * 300 + 100;
+                    if (this.visible) {
+                        this.x = Math.random() * (canvas.width - 100) + 50;
+                        this.y = Math.random() * (canvas.height - 100) + 50;
+                    }
+                }
+                if (this.visible) {
+                    this.x += this.vx;
+                    this.y += this.vy;
+                    if (this.x < 50 || this.x > canvas.width - 50) this.vx *= -1;
+                    if (this.y < 50 || this.y > canvas.height - 50) this.vy *= -1;
+                }
+            }
+            draw() {
+                if (this.visible) {
+                    ctx.font = '50px Arial';
+                    ctx.textAlign = 'center';
+                    ctx.fillText(this.char, this.x, this.y);
+                }
+            }
+        }
+
+        class Particle {
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.vx = (Math.random() - 0.5) * 0.5;
+                this.vy = (Math.random() - 0.5) * 0.5;
+                this.size = Math.random() * 2;
+                this.life = 1;
+            }
+            update() {
+                this.x += this.vx;
+                this.y += this.vy;
+                this.life -= 0.01;
+                if (this.life <= 0) {
+                    this.x = Math.random() * canvas.width;
+                    this.y = Math.random() * canvas.height;
+                    this.life = 1;
+                }
+            }
+            draw() {
+                ctx.fillStyle = `rgba(255, 107, 53, ${this.life * 0.5})`;
+                ctx.fillRect(this.x, this.y, this.size, this.size);
+            }
+        }
+
+        for (let i = 0; i < 5; i++) animatronics.push(new Animatronic());
+        for (let i = 0; i < 100; i++) particles.push(new Particle());
+
+        function startGame() {
+            document.getElementById('start-screen').style.display = 'none';
+            gameStarted = true;
+            gameLoop();
+            setInterval(() => {
+                if (!gameStarted) return;
+                time++;
+                const hour = 12 + Math.floor(time / 10);
+                const displayHour = hour > 12 ? hour - 12 : hour;
+                const ampm = hour >= 12 && hour < 24 ? 'AM' : 'AM';
+                document.getElementById('time').textContent = `${displayHour}:00 ${ampm}`;
+                if (hour >= 6) {
+                    gameStarted = false;
+                    document.getElementById('birthday-msg').classList.add('show');
+                }
+            }, 1000);
+        }
+
+        function switchCam(cam) {
+            currentCam = cam;
+            document.querySelectorAll('.cam-btn').forEach((btn, idx) => {
+                btn.classList.toggle('active', idx + 1 === cam);
+            });
+        }
+
+        function toggleDoor(side) {
+            if (side === 'left') {
+                leftDoorClosed = !leftDoorClosed;
+                document.getElementById('left-door').classList.toggle('closed', leftDoorClosed);
+            } else {
+                rightDoorClosed = !rightDoorClosed;
+                document.getElementById('right-door').classList.toggle('closed', rightDoorClosed);
+            }
+        }
+
+        function gameLoop() {
+            if (!gameStarted) {
+                requestAnimationFrame(gameLoop);
+                return;
+            }
+            ctx.fillStyle = 'rgba(10, 10, 10, 0.3)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            ctx.strokeStyle = '#4a4a6a';
+            ctx.lineWidth = 2;
+            ctx.strokeRect(50, 50, canvas.width - 100, canvas.height - 200);
+
+            ctx.font = '16px "Press Start 2P"';
+            ctx.fillStyle = '#ff6b35';
+            ctx.textAlign = 'left';
+            ctx.fillText(`CAM 0${currentCam}`, 60, 80);
+
+            particles.forEach(p => { p.update(); p.draw(); });
+            animatronics.forEach(a => { a.update(); a.draw(); });
+
+            requestAnimationFrame(gameLoop);
+        }
+
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        });
+    </script>
+</body>
+</html>
