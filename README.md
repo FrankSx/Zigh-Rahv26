@@ -1,73 +1,89 @@
-# 🐻🎮 ZIGH & RAHV // BIRTHDAY 2026
+# 🐻🏃 ZIGH & RAVEE // BIRTHDAY 2026
 
 ```
- _    _ _____ _   _  ____   _    _ _____ _   _  ____ 
-| |  | |_   _| | | |/ ___| | |  | |_   _| | | |/ ___|
-| |__| | | | | |_| | |  _  | |__| | | | | |_| | |  _ 
-|  __  | | | |  _  | |_| | |  __  | | | |  _  | |_| |
-|_|  |_| |_| |_| |_|\____| |_|  |_| |_| |_| |_|\____|
+ _______  ___   __   __  _______    _______  ___   _______  __   __  _______ 
+|       ||   | |  |_|  ||       |  |       ||   | |       ||  | |  ||       |
+|    ___||   | |       ||    ___|  |    ___||   | |    ___||  | |  ||    ___|
+|   |___ |   | |       ||   |___   |   | __ |   | |   |___ |  |_|  ||   |___ 
+|    ___||   | |       ||    ___|  |   ||  ||   | |    ___||       ||    ___|
+|   |    |   | | ||_|| ||   |___   |   |_| ||   | |   |___ |       ||   |___ 
+|___|    |___| |_|   |_||_______|  |_______||___| |_______||_______||_______|
 ```
 
-> *Happy Birthday to two awesome gamers!*
+> *Happy Birthday! Two games, one epic celebration.*
 
 ---
 
-## 🎁 THE PRESENTS
+## 🎮 THE GAMES
 
-### 🐻 For ZIGH - FNAF Security Office
-**Five Nights at Freddy's inspired night guard simulator**
+### 💻 ZIGH - Terminal Hacking Adventure
+**FNAF-themed hacking simulator with puzzles**
 
-- Monitor security cameras (5 camera feeds)
-- Control left and right doors
-- Watch out for animatronics! 🐻🐰🐔🦊
-- Survive until 6 AM
-- Retro pixel art style with scanline effects
+🐻 **FNAF Characters give you clues:**
+- Freddy (🐻) - Count his letters
+- Bonnie (🐰) - What color is he?
+- Chica (🐔) - Pizza math problem
+- Foxy (🦊) - Pirate code
+- Endo (🤖) - Skeleton name
 
-**[🎮 Play Security Office →](zigh/security_office.html)**
+**Features:**
+- 💻 Real terminal interface with CRT effects
+- 🧩 5 puzzles to solve
+- 🏆 Achievement system (dopamine hits!)
+- 📊 Progress bars
+- 🎒 Inventory system
+- ⏱️ Timer and stats
+- 🌧️ Matrix rain background
+- 💡 Quick command buttons
 
----
+**How to play:**
+1. Type `help` to see commands
+2. Type `scan` to find clues
+3. Type `cat clues/freddy.txt` to read clues
+4. Type `decode [answer]` to solve
+5. Type `hack` when you have all 5 codes!
 
-### 🏃 For RAHV - Roblox Obby Adventure
-**Roblox-style obstacle course platformer**
-
-- Jump across floating platforms
-- Collect coins (🪙) for points
-- Avoid red obstacles (🔴)
-- Reach the finish flag (🏁)
-- Colorful blocky graphics
-
-**Controls:** Arrow keys to move, SPACE or CLICK to jump
-
-**[🎮 Play Obby Adventure →](rahv/obby_adventure.html)**
-
----
-
-### ⚡ For BOTH - Fusion Zone
-**FNAF + Roblox combined!**
-
-- Click to spawn animatronics
-- Collect all 20 coins to win
-- Watch the creatures bounce around
-- Emoji rain celebration when you win!
-
-**[🎮 Play Fusion Zone →](shared/fusion_zone.html)**
+**Master Code:** 6-3-11-1-4 (but find it yourself!)
 
 ---
 
-## 🚀 How to Play
+### 🏃 RAVEE - Obby Adventure
+**Roblox-style platformer**
+
+**Features:**
+- 🏃 Jump across floating platforms
+- 🪙 Collect coins
+- 🔴 Avoid red obstacles
+- 🏁 Reach the finish flag
+- 📱 Mobile touch controls
+- ✨ Particle effects
+- 🎨 Bright, colorful graphics
+
+**Controls:**
+- `← →` or `A D` to move
+- `SPACE` or `↑` or `CLICK` to jump
+- Touch buttons on mobile
+
+---
+
+### ⚡ FUSION ZONE
+**Both games combined!**
+
+- Click to spawn FNAF characters
+- Collect 20 coins to win
+- Emoji celebration when you win!
+
+---
+
+## 🚀 HOW TO PLAY
 
 ### Option 1: Open Directly
-Simply open `index.html` in any modern web browser!
+Open `index.html` in any web browser!
 
-### Option 2: Local Server (Recommended)
+### Option 2: Local Server
 ```bash
-# Using Python
 python -m http.server 8000
-
-# Using Node.js
-npx serve -p 8000
-
-# Then open http://localhost:8000
+# Then go to http://localhost:8000
 ```
 
 ### Option 3: GitHub Pages
@@ -75,63 +91,57 @@ Upload to GitHub and enable Pages for free hosting!
 
 ---
 
-## 🎮 Game Details
+## 🎯 DOPAMINE & ENRICHMENT FEATURES
 
-| Feature | Zigh (FNAF) | Rahv (Roblox) | Fusion |
-|---------|-------------|---------------|--------|
-| **Genre** | Horror/Survival | Platformer | Arcade |
-| **Theme** | Security Office | Obby/Obstacle Course | Mixed |
-| **Controls** | Mouse | Arrow Keys + Space | Mouse |
-| **Goal** | Survive until 6 AM | Reach the finish | Collect coins |
-| **Graphics** | Dark/Retro | Bright/Colorful | Mixed |
+### For ZIGH's Terminal Game:
+- ✅ **Progress bars** that fill up (visual reward)
+- ✅ **Achievements** that pop when unlocked
+- ✅ **Level-up feeling** when solving clues
+- ✅ **Shimmer effects** on progress bars
+- ✅ **Achievement animations** (scale/pop)
+- ✅ **Timer** to track speed (speedrunning)
+- ✅ **Stats tracking** (commands, files accessed)
+- ✅ **Inventory collection** (tangible progress)
+- ✅ **Matrix rain** (sensory stimulation)
+- ✅ **Boot sequence** (anticipation/buildup)
 
----
-
-## 🎨 Tech Stack
-
-- **HTML5 Canvas** - Game rendering
-- **Vanilla JavaScript** - Game logic
-- **CSS3** - Styling and animations
-- **Google Fonts** - Press Start 2P, Luckiest Guy
-- **No external libraries** - Pure code!
-
----
-
-## 🎯 Age Appropriate
-
-- ✅ No scary jump scares (just fun animatronics)
-- ✅ Simple controls
-- ✅ Bright colors and emojis
-- ✅ No violence or inappropriate content
-- ✅ Educational (coding, problem-solving)
+### For RAVEE's Obby:
+- ✅ **Coin collection** (instant reward)
+- ✅ **Particle effects** (visual feedback)
+- ✅ **Win screen** with stats (completion reward)
+- ✅ **Mobile controls** (accessibility)
+- ✅ **Smooth physics** (satisfying movement)
 
 ---
 
-## 📁 Files
+## 📁 FILES
 
 ```
-📂 zigh-rahv-birthday-2026/
-├── 📄 index.html              # Portal/Menu
+zigh-ravee-birthday-2026/
+├── 📄 index.html              # Portal menu
 ├── 📄 README.md               # This file
-├── 🐻 zigh/
-│   └── security_office.html   # FNAF game
-├── 🏃 rahv/
-│   └── obby_adventure.html    # Roblox game
+├── 💻 zigh/
+│   └── terminal_hack.html     # FNAF hacking game
+├── 🏃 ravee/
+│   └── obby_adventure.html    # Roblox platformer
 └── ⚡ shared/
     └── fusion_zone.html       # Combined game
 ```
 
 ---
 
-## 🎂 Birthday Message
+## 🎂 BIRTHDAY MESSAGE
 
 ```
-🎉🎂🎁 HAPPY BIRTHDAY ZIGH & RAHV! 🎁🎂🎉
+🎉🎂 HAPPY BIRTHDAY ZIGH & RAVEE! 🎂🎉
 
-Thanks for being awesome gamers!
+You guys are awesome gamers!
 Hope you enjoy these custom-made games.
 
-Keep playing, keep exploring, keep having fun!
+ZIGH: You're a master hacker who can solve any puzzle!
+RAVEE: You're an obby champion who never gives up!
+
+Keep being amazing!
 
 From the 13th hour,
 frankSx 🦀
@@ -139,11 +149,9 @@ frankSx 🦀
 
 ---
 
-## 📝 License
+## 📝 LICENSE
 
-MIT License - Feel free to use, modify, and share!
-
-Just remember: these were made with love for Zigh and Rahv's birthday! 🎮🐻
+MIT License - Have fun and share the joy!
 
 ---
 

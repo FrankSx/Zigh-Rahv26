@@ -1,0 +1,1030 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>💻 ZIGH // TERMINAL ACCESS // SECURITY OVERRIDE</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=VT323&family=Share+Tech+Mono&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --terminal-green: #00ff41;
+            --terminal-amber: #ffb000;
+            --terminal-red: #ff3333;
+            --terminal-blue: #00bfff;
+            --terminal-purple: #bf00ff;
+            --bg-dark: #0c0c0c;
+            --bg-panel: #1a1a1a;
+        }
+
+        body {
+            background: var(--bg-dark);
+            color: var(--terminal-green);
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 16px;
+            line-height: 1.6;
+            overflow: hidden;
+            height: 100vh;
+        }
+
+        /* CRT Screen Effects */
+        .crt-container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        .crt-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(
+                rgba(18, 16, 16, 0) 50%,
+                rgba(0, 0, 0, 0.25) 50%
+            );
+            background-size: 100% 4px;
+            pointer-events: none;
+            z-index: 10;
+        }
+
+        .crt-container::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(
+                ellipse at center,
+                rgba(0,0,0,0) 0%,
+                rgba(0,0,0,0.4) 100%
+            );
+            pointer-events: none;
+            z-index: 11;
+        }
+
+        /* Boot Sequence */
+        .boot-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--bg-dark);
+            z-index: 1000;
+            padding: 40px;
+            font-size: 14px;
+        }
+
+        .boot-line {
+            opacity: 0;
+            animation: bootFade 0.1s forwards;
+        }
+
+        @keyframes bootFade {
+            to { opacity: 1; }
+        }
+
+        /* Main Terminal Layout */
+        .terminal-wrapper {
+            display: grid;
+            grid-template-columns: 250px 1fr 300px;
+            grid-template-rows: 60px 1fr 100px;
+            height: 100vh;
+            gap: 2px;
+            background: #000;
+            padding: 2px;
+        }
+
+        /* Header */
+        .terminal-header {
+            grid-column: 1 / -1;
+            background: var(--bg-panel);
+            border-bottom: 2px solid var(--terminal-green);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 20px;
+        }
+
+        .system-title {
+            font-size: 20px;
+            font-weight: bold;
+            text-shadow: 0 0 10px var(--terminal-green);
+        }
+
+        .status-bar {
+            display: flex;
+            gap: 30px;
+            font-size: 14px;
+        }
+
+        .status-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .status-indicator {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: var(--terminal-green);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+
+        /* Sidebar - Progress & Achievements */
+        .sidebar-left {
+            background: var(--bg-panel);
+            padding: 20px;
+            overflow-y: auto;
+            border-right: 1px solid #333;
+        }
+
+        .panel-title {
+            font-size: 14px;
+            color: var(--terminal-amber);
+            border-bottom: 1px solid var(--terminal-amber);
+            padding-bottom: 5px;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+        }
+
+        .progress-section {
+            margin-bottom: 25px;
+        }
+
+        .progress-label {
+            font-size: 12px;
+            margin-bottom: 5px;
+            color: #888;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 20px;
+            background: #000;
+            border: 1px solid var(--terminal-green);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--terminal-green), var(--terminal-blue));
+            width: 0%;
+            transition: width 0.5s ease;
+            position: relative;
+        }
+
+        .progress-fill::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            width: 20px;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3));
+            animation: shimmer 1s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { transform: translateX(20px); }
+            100% { transform: translateX(-20px); }
+        }
+
+        .achievement {
+            background: rgba(0, 255, 65, 0.1);
+            border: 1px solid var(--terminal-green);
+            padding: 10px;
+            margin-bottom: 10px;
+            font-size: 12px;
+            opacity: 0.3;
+            transition: all 0.3s;
+        }
+
+        .achievement.unlocked {
+            opacity: 1;
+            background: rgba(0, 255, 65, 0.2);
+            animation: achievementPop 0.5s ease;
+        }
+
+        @keyframes achievementPop {
+            0% { transform: scale(0.8); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        .achievement-icon {
+            font-size: 20px;
+            margin-right: 8px;
+        }
+
+        /* Main Terminal Area */
+        .terminal-main {
+            background: var(--bg-dark);
+            padding: 20px;
+            overflow-y: auto;
+            font-size: 15px;
+        }
+
+        .terminal-output {
+            margin-bottom: 20px;
+        }
+
+        .terminal-line {
+            margin-bottom: 5px;
+            word-wrap: break-word;
+        }
+
+        .terminal-line.command {
+            color: var(--terminal-blue);
+        }
+
+        .terminal-line.success {
+            color: var(--terminal-green);
+        }
+
+        .terminal-line.error {
+            color: var(--terminal-red);
+        }
+
+        .terminal-line.info {
+            color: var(--terminal-amber);
+        }
+
+        .terminal-line.clue {
+            color: var(--terminal-purple);
+            font-style: italic;
+        }
+
+        .terminal-input-line {
+            display: flex;
+            align-items: center;
+            margin-top: 10px;
+        }
+
+        .prompt {
+            color: var(--terminal-green);
+            margin-right: 10px;
+            white-space: nowrap;
+        }
+
+        .terminal-input {
+            background: transparent;
+            border: none;
+            color: var(--terminal-green);
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 15px;
+            flex: 1;
+            outline: none;
+            caret-color: var(--terminal-green);
+        }
+
+        /* Right Panel - FNAF Clues & Inventory */
+        .sidebar-right {
+            background: var(--bg-panel);
+            padding: 20px;
+            overflow-y: auto;
+            border-left: 1px solid #333;
+        }
+
+        .clue-panel {
+            background: rgba(255, 176, 0, 0.1);
+            border: 1px solid var(--terminal-amber);
+            padding: 15px;
+            margin-bottom: 20px;
+            font-size: 13px;
+        }
+
+        .clue-title {
+            color: var(--terminal-amber);
+            font-weight: bold;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .clue-content {
+            color: #ccc;
+            line-height: 1.8;
+        }
+
+        .inventory-item {
+            background: rgba(0, 191, 255, 0.1);
+            border: 1px solid var(--terminal-blue);
+            padding: 10px;
+            margin-bottom: 10px;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .inventory-item.collected {
+            border-color: var(--terminal-green);
+            background: rgba(0, 255, 65, 0.1);
+        }
+
+        /* Bottom Panel - Quick Actions */
+        .bottom-panel {
+            grid-column: 1 / -1;
+            background: var(--bg-panel);
+            border-top: 2px solid var(--terminal-green);
+            display: flex;
+            align-items: center;
+            padding: 0 20px;
+            gap: 20px;
+        }
+
+        .quick-cmd {
+            padding: 8px 16px;
+            background: rgba(0, 255, 65, 0.1);
+            border: 1px solid var(--terminal-green);
+            color: var(--terminal-green);
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .quick-cmd:hover {
+            background: var(--terminal-green);
+            color: #000;
+        }
+
+        /* Scrollbar Styling */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #000;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--terminal-green);
+        }
+
+        /* Animations */
+        @keyframes blink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0; }
+        }
+
+        .cursor {
+            animation: blink 1s infinite;
+        }
+
+        /* Level Complete Overlay */
+        .level-complete {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0, 0, 0, 0.95);
+            border: 3px solid var(--terminal-green);
+            padding: 40px;
+            text-align: center;
+            z-index: 100;
+            display: none;
+        }
+
+        .level-complete.show {
+            display: block;
+            animation: levelPop 0.5s ease;
+        }
+
+        @keyframes levelPop {
+            0% { transform: translate(-50%, -50%) scale(0); }
+            80% { transform: translate(-50%, -50%) scale(1.1); }
+            100% { transform: translate(-50%, -50%) scale(1); }
+        }
+
+        .level-complete h2 {
+            color: var(--terminal-green);
+            font-size: 32px;
+            margin-bottom: 20px;
+            text-shadow: 0 0 20px var(--terminal-green);
+        }
+
+        /* Matrix Rain Effect for Hacking */
+        .matrix-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+            opacity: 0.05;
+        }
+    </style>
+</head>
+<body>
+    <div class="crt-container">
+        <!-- Boot Screen -->
+        <div class="boot-screen" id="boot-screen">
+            <div id="boot-content"></div>
+        </div>
+
+        <!-- Main Terminal -->
+        <div class="terminal-wrapper" id="terminal" style="display: none;">
+            <header class="terminal-header">
+                <div class="system-title">🔒 FAZBEAR ENTERTAINMENT - SECURITY TERMINAL</div>
+                <div class="status-bar">
+                    <div class="status-item">
+                        <div class="status-indicator"></div>
+                        <span>SYSTEM: ONLINE</span>
+                    </div>
+                    <div class="status-item">
+                        <span>USER: ZIGH</span>
+                    </div>
+                    <div class="status-item">
+                        <span>CLEARANCE: LEVEL <span id="level-display">1</span></span>
+                    </div>
+                </div>
+            </header>
+
+            <aside class="sidebar-left">
+                <div class="progress-section">
+                    <div class="panel-title">📊 System Access</div>
+                    <div class="progress-label">Security Override Progress</div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="main-progress"></div>
+                    </div>
+                    <div style="text-align: right; font-size: 12px; margin-top: 5px;">
+                        <span id="progress-text">0%</span>
+                    </div>
+                </div>
+
+                <div class="progress-section">
+                    <div class="panel-title">🏆 Achievements</div>
+                    <div id="achievements-list">
+                        <div class="achievement" id="ach-first-hack">
+                            <span class="achievement-icon">🔓</span>
+                            <span>First Hack</span>
+                        </div>
+                        <div class="achievement" id="ach-clue-master">
+                            <span class="achievement-icon">🧩</span>
+                            <span>Clue Master</span>
+                        </div>
+                        <div class="achievement" id="ach-speed-runner">
+                            <span class="achievement-icon">⚡</span>
+                            <span>Speed Runner</span>
+                        </div>
+                        <div class="achievement" id="ach-security-expert">
+                            <span class="achievement-icon">🛡️</span>
+                            <span>Security Expert</span>
+                        </div>
+                        <div class="achievement" id="ach-birthday-hacker">
+                            <span class="achievement-icon">🎂</span>
+                            <span>Birthday Hacker</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="progress-section">
+                    <div class="panel-title">📈 Stats</div>
+                    <div style="font-size: 12px; line-height: 2;">
+                        <div>Commands Executed: <span id="cmd-count">0</span></div>
+                        <div>Files Accessed: <span id="file-count">0</span></div>
+                        <div>Time Elapsed: <span id="time-elapsed">00:00</span></div>
+                    </div>
+                </div>
+            </aside>
+
+            <main class="terminal-main">
+                <div class="terminal-output" id="terminal-output"></div>
+                <div class="terminal-input-line">
+                    <span class="prompt">zigh@fazbear:~$</span>
+                    <input type="text" class="terminal-input" id="terminal-input" autocomplete="off" spellcheck="false">
+                </div>
+            </main>
+
+            <aside class="sidebar-right">
+                <div class="panel-title">🔍 FNAF Intel</div>
+                <div class="clue-panel" id="active-clue">
+                    <div class="clue-title">🐻 Current Lead</div>
+                    <div class="clue-content" id="clue-text">
+                        Welcome to the Fazbear security system. I've left clues throughout the network to help you hack in. Start by typing 'help' to see available commands.
+                    </div>
+                </div>
+
+                <div class="panel-title">🎒 Inventory</div>
+                <div id="inventory-list">
+                    <div class="inventory-item" id="inv-keycard">
+                        <span>💳</span>
+                        <span>Keycard (Locked)</span>
+                    </div>
+                    <div class="inventory-item" id="inv-password">
+                        <span>🔑</span>
+                        <span>Password Fragment (Locked)</span>
+                    </div>
+                    <div class="inventory-item" id="inv-access">
+                        <span>🎫</span>
+                        <span>Admin Access (Locked)</span>
+                    </div>
+                </div>
+            </aside>
+
+            <footer class="bottom-panel">
+                <span style="font-size: 12px; color: #666;">QUICK COMMANDS:</span>
+                <button class="quick-cmd" onclick="quickCmd('help')">help</button>
+                <button class="quick-cmd" onclick="quickCmd('ls')">ls</button>
+                <button class="quick-cmd" onclick="quickCmd('scan')">scan</button>
+                <button class="quick-cmd" onclick="quickCmd('clue')">clue</button>
+                <button class="quick-cmd" onclick="quickCmd('hack')">hack</button>
+                <span style="margin-left: auto; font-size: 12px; color: var(--terminal-amber);">
+                    🎂 BIRTHDAY PROTOCOL 2026
+                </span>
+            </footer>
+        </div>
+
+        <!-- Level Complete Modal -->
+        <div class="level-complete" id="level-complete">
+            <h2>🔓 SECURITY OVERRIDE COMPLETE</h2>
+            <p style="color: var(--terminal-amber); font-size: 18px; margin-bottom: 20px;">
+                All systems accessed. Birthday clearance granted.
+            </p>
+            <p style="color: #fff; font-size: 24px; margin-bottom: 20px;">
+                🎂 HAPPY BIRTHDAY ZIGH! 🎂
+            </p>
+            <p style="color: #666; font-size: 14px;">
+                You are a true hacker. From the 13th hour.
+            </p>
+        </div>
+    </div>
+
+    <canvas class="matrix-bg" id="matrix-canvas"></canvas>
+
+    <script>
+        // Game State
+        const gameState = {
+            level: 1,
+            progress: 0,
+            commandsExecuted: 0,
+            filesAccessed: [],
+            inventory: {
+                keycard: false,
+                password: false,
+                admin: false
+            },
+            achievements: [],
+            startTime: Date.now(),
+            currentClue: 0,
+            hackedSystems: []
+        };
+
+        // FNAF Character Clues
+        const fnafClues = [
+            {
+                char: "🐻 Freddy",
+                clue: "I am the leader of the band. My name starts with F and ends with Y. Count my letters to find the first digit of the security code.",
+                answer: "6",
+                hint: "F-R-E-D-D-Y = 6 letters"
+            },
+            {
+                char: "🐰 Bonnie",
+                clue: "I play guitar with purple fur. My color is the same as a certain fruit. What color am I? (Answer with a number: 1=Red, 2=Blue, 3=Purple, 4=Green)",
+                answer: "3",
+                hint: "Bonnie is purple!"
+            },
+            {
+                char: "🐔 Chica",
+                clue: "I love pizza and carry a cupcake. If I have 2 pizzas with 8 slices each, and I eat 5 slices, how many remain?",
+                answer: "11",
+                hint: "2 × 8 = 16, 16 - 5 = 11"
+            },
+            {
+                char: "🦊 Foxy",
+                clue: "I'm the pirate fox with a hook for a hand. I run fast down the hallway. What do pirates say? (First letter only, converted to number: A=1, B=2, etc.)",
+                answer: "1",
+                hint: "ARRR! A is the 1st letter"
+            },
+            {
+                char: "🤖 Endo",
+                clue: "I am the endoskeleton - the metal bones inside. I have no costume, just wires and servos. How many letters in 'endo'?",
+                answer: "4",
+                hint: "E-N-D-O = 4 letters"
+            }
+        ];
+
+        // File System
+        const fileSystem = {
+            'readme.txt': `FAZBEAR SECURITY TERMINAL v2.0
+Authorized Personnel Only
+
+DIRECTIVES:
+1. Monitor animatronic activity
+2. Maintain security protocols
+3. Report anomalies immediately
+
+HINT: Type 'help' for available commands.`,
+            'security.log': `[12:00] System initialized
+[12:05] Unauthorized access attempt detected
+[12:10] Security protocols engaged
+[12:15] 🐻 Freddy left clue in /clues/freddy.txt
+[12:20] 🐰 Bonnie left clue in /clues/bonnie.txt
+[12:25] 🐔 Chica left clue in /clues/chica.txt
+[12:30] 🦊 Foxy left clue in /clues/foxy.txt
+[12:35] 🤖 Endo left clue in /clues/endo.txt
+
+CONNECTION: All clues reveal parts of MASTER CODE.`,
+            'master_code.txt': `🔒 ENCRYPTED 🔒
+
+Decryption requires 5 character clues.
+Collect all clues from /clues/ directory.
+
+Progress: 0/5`,
+            'clues/freddy.txt': '',
+            'clues/bonnie.txt': '',
+            'clues/chica.txt': '',
+            'clues/foxy.txt': '',
+            'clues/endo.txt': ''
+        };
+
+        // Initialize clue files
+        fnafClues.forEach((c, i) => {
+            const filename = ['freddy', 'bonnie', 'chica', 'foxy', 'endo'][i];
+            fileSystem[`clues/${filename}.txt`] = `FROM: ${c.char}
+
+${c.clue}
+
+Use 'decode [answer]' to verify.`;
+        });
+
+        // Boot Sequence
+        const bootLines = [
+            { text: "BIOS DATE 01/01/2026 14:22:51 VER 2.0", delay: 100 },
+            { text: "CPU: FAZBEAR ENT. SECURITY PROCESSOR", delay: 200 },
+            { text: "MEM: 640K RAM... OK", delay: 150 },
+            { text: "BOOTING FROM NETWORK...", delay: 300 },
+            { text: "LOADING SECURITY PROTOCOLS...", delay: 400 },
+            { text: "✓ Camera systems initialized", delay: 200 },
+            { text: "✓ Door controls online", delay: 200 },
+            { text: "✓ Animatronic sensors active", delay: 200 },
+            { text: "⚠ WARNING: Unauthorized access detected", delay: 300, color: '#ff3333' },
+            { text: "⚠ Security override in progress", delay: 300, color: '#ff3333' },
+            { text: "", delay: 200 },
+            { text: "🐻 INCOMING MESSAGE FROM FREDDY:", delay: 400, color: '#ffb000' },
+            { text: "'Hey there, hacker! The security system is locked, but I've hidden clues throughout the network. Solve them to gain access. Good luck! -F'", delay: 600, color: '#00bfff' },
+            { text: "", delay: 200 },
+            { text: "INITIALIZING TERMINAL INTERFACE...", delay: 500 },
+            { text: "ACCESS GRANTED - WELCOME ZIGH", delay: 300, color: '#00ff41' }
+        ];
+
+        function runBootSequence() {
+            const bootContent = document.getElementById('boot-content');
+            let delay = 0;
+
+            bootLines.forEach((line, index) => {
+                setTimeout(() => {
+                    const div = document.createElement('div');
+                    div.className = 'boot-line';
+                    div.textContent = line.text;
+                    div.style.color = line.color || '#00ff41';
+                    div.style.marginBottom = '5px';
+                    bootContent.appendChild(div);
+                    bootContent.scrollTop = bootContent.scrollHeight;
+                }, delay);
+                delay += line.delay;
+            });
+
+            setTimeout(() => {
+                document.getElementById('boot-screen').style.display = 'none';
+                document.getElementById('terminal').style.display = 'grid';
+                document.getElementById('terminal-input').focus();
+                addOutput('System ready. Type "help" for available commands.', 'success');
+                updateClue();
+                startTimer();
+            }, delay + 500);
+        }
+
+        // Terminal Functions
+        const terminalOutput = document.getElementById('terminal-output');
+        const terminalInput = document.getElementById('terminal-input');
+
+        function addOutput(text, type = 'normal') {
+            const line = document.createElement('div');
+            line.className = `terminal-line ${type}`;
+            line.textContent = text;
+            terminalOutput.appendChild(line);
+            terminalOutput.scrollTop = terminalOutput.scrollHeight;
+        }
+
+        function quickCmd(cmd) {
+            terminalInput.value = cmd;
+            executeCommand(cmd);
+            terminalInput.value = '';
+        }
+
+        function executeCommand(cmd) {
+            gameState.commandsExecuted++;
+            document.getElementById('cmd-count').textContent = gameState.commandsExecuted;
+
+            addOutput(`zigh@fazbear:~$ ${cmd}`, 'command');
+
+            const args = cmd.toLowerCase().trim().split(' ');
+            const command = args[0];
+
+            switch(command) {
+                case 'help':
+                    showHelp();
+                    break;
+                case 'ls':
+                    listFiles();
+                    break;
+                case 'cat':
+                    if (args[1]) readFile(args[1]);
+                    else addOutput('Usage: cat [filename]', 'error');
+                    break;
+                case 'scan':
+                    scanSystem();
+                    break;
+                case 'clue':
+                    showCurrentClue();
+                    break;
+                case 'decode':
+                    if (args[1]) decodeAnswer(args[1]);
+                    else addOutput('Usage: decode [answer]', 'error');
+                    break;
+                case 'hack':
+                    attemptHack();
+                    break;
+                case 'clear':
+                    terminalOutput.innerHTML = '';
+                    break;
+                case 'inventory':
+                case 'inv':
+                    showInventory();
+                    break;
+                case 'status':
+                    showStatus();
+                    break;
+                case 'exit':
+                    addOutput('Nice try! The only way out is through...', 'info');
+                    break;
+                default:
+                    if (cmd.trim() !== '') {
+                        addOutput(`Command not found: ${command}. Type 'help' for available commands.`, 'error');
+                    }
+            }
+
+            updateProgress();
+        }
+
+        function showHelp() {
+            addOutput('AVAILABLE COMMANDS:', 'info');
+            addOutput('  help       - Show this help message', 'success');
+            addOutput('  ls         - List files in current directory', 'success');
+            addOutput('  cat [file] - Read file contents', 'success');
+            addOutput('  scan       - Scan for security vulnerabilities', 'success');
+            addOutput('  clue       - Show current FNAF character clue', 'success');
+            addOutput('  decode [x] - Decode answer to current clue', 'success');
+            addOutput('  hack       - Attempt security override', 'success');
+            addOutput('  inventory  - Show collected items', 'success');
+            addOutput('  status     - Show system status', 'success');
+            addOutput('  clear      - Clear terminal screen', 'success');
+        }
+
+        function listFiles() {
+            addOutput('DIRECTORY CONTENTS:', 'info');
+            Object.keys(fileSystem).forEach(file => {
+                const size = fileSystem[file].length;
+                addOutput(`  ${file} (${size} bytes)`, 'success');
+            });
+        }
+
+        function readFile(filename) {
+            if (fileSystem[filename]) {
+                addOutput(`=== ${filename} ===`, 'info');
+                fileSystem[filename].split('\n').forEach(line => {
+                    addOutput(line);
+                });
+
+                if (!gameState.filesAccessed.includes(filename)) {
+                    gameState.filesAccessed.push(filename);
+                    document.getElementById('file-count').textContent = gameState.filesAccessed.length;
+
+                    if (filename.includes('clues/') && gameState.filesAccessed.filter(f => f.includes('clues/')).length === 1) {
+                        unlockAchievement('ach-first-hack');
+                    }
+                }
+            } else {
+                addOutput(`File not found: ${filename}`, 'error');
+            }
+        }
+
+        function scanSystem() {
+            addOutput('SCANNING NETWORK...', 'info');
+            setTimeout(() => {
+                addOutput('✓ 5 security nodes detected', 'success');
+                addOutput('✓ All nodes protected by FNAF character protocols', 'success');
+                addOutput('⚠ Decryption required for each node', 'error');
+                addOutput(`Progress: ${gameState.currentClue}/5 nodes unlocked`, 'info');
+            }, 800);
+        }
+
+        function showCurrentClue() {
+            if (gameState.currentClue < fnafClues.length) {
+                const clue = fnafClues[gameState.currentClue];
+                addOutput(`🔍 CLUE FROM ${clue.char}:`, 'clue');
+                addOutput(clue.clue, 'clue');
+                addOutput(`Hint: Use 'decode [answer]' to verify.`, 'info');
+            } else {
+                addOutput('✓ All clues collected! Use "hack" to override security.', 'success');
+            }
+        }
+
+        function decodeAnswer(answer) {
+            if (gameState.currentClue >= fnafClues.length) {
+                addOutput('All clues already decoded!', 'success');
+                return;
+            }
+
+            const clue = fnafClues[gameState.currentClue];
+            if (answer === clue.answer) {
+                addOutput(`✓ CORRECT! ${clue.char} approves.`, 'success');
+                addOutput(`💡 ${clue.hint}`, 'info');
+
+                gameState.currentClue++;
+                updateProgress();
+                updateClue();
+
+                // Dopamine: Progress animation
+                setTimeout(() => {
+                    addOutput(`🎉 PROGRESS: ${gameState.currentClue}/5 clues solved!`, 'success');
+                }, 500);
+
+                if (gameState.currentClue === 3) {
+                    unlockAchievement('ach-clue-master');
+                }
+
+                if (gameState.currentClue >= fnafClues.length) {
+                    addOutput('🔓 ALL CLUES COLLECTED!', 'success');
+                    addOutput('Master code revealed: 6-3-11-1-4', 'success');
+                    addOutput('Use "hack" command to override security.', 'info');
+                    unlockAchievement('ach-security-expert');
+                }
+            } else {
+                addOutput('✗ Incorrect. Try again!', 'error');
+                addOutput(`Hint: ${clue.hint}`, 'info');
+            }
+        }
+
+        function attemptHack() {
+            if (gameState.currentClue < fnafClues.length) {
+                addOutput('✗ Security override failed!', 'error');
+                addOutput(`Collect all clues first! (${gameState.currentClue}/5)`, 'error');
+                return;
+            }
+
+            addOutput('🔓 INITIATING SECURITY OVERRIDE...', 'info');
+            addOutput('Bypassing firewall...', 'success');
+
+            setTimeout(() => {
+                addOutput('Decrypting master code: 6-3-11-1-4...', 'success');
+            }, 800);
+
+            setTimeout(() => {
+                addOutput('✓ Access granted to all systems!', 'success');
+                unlockAchievement('ach-birthday-hacker');
+
+                setTimeout(() => {
+                    document.getElementById('level-complete').classList.add('show');
+                }, 1000);
+            }, 1500);
+        }
+
+        function showInventory() {
+            addOutput('INVENTORY:', 'info');
+            Object.keys(gameState.inventory).forEach(item => {
+                const status = gameState.inventory[item] ? '✓' : '○';
+                addOutput(`  ${status} ${item}`, gameState.inventory[item] ? 'success' : 'error');
+            });
+        }
+
+        function showStatus() {
+            addOutput('SYSTEM STATUS:', 'info');
+            addOutput(`  Security Level: ${gameState.level}`, 'success');
+            addOutput(`  Clues Solved: ${gameState.currentClue}/5`, 'success');
+            addOutput(`  Commands: ${gameState.commandsExecuted}`, 'success');
+            addOutput(`  Files Accessed: ${gameState.filesAccessed.length}`, 'success');
+        }
+
+        function updateClue() {
+            if (gameState.currentClue < fnafClues.length) {
+                const clue = fnafClues[gameState.currentClue];
+                document.getElementById('clue-text').innerHTML = `
+                    <strong>From: ${clue.char}</strong><br><br>
+                    ${clue.clue}<br><br>
+                    <em>Type 'decode [answer]' to solve</em>
+                `;
+            } else {
+                document.getElementById('clue-text').innerHTML = `
+                    <strong>🎉 ALL CLUES COLLECTED!</strong><br><br>
+                    Master Code: <strong>6-3-11-1-4</strong><br><br>
+                    <em>Type 'hack' to override security</em>
+                `;
+            }
+        }
+
+        function updateProgress() {
+            const progress = (gameState.currentClue / fnafClues.length) * 100;
+            document.getElementById('main-progress').style.width = progress + '%';
+            document.getElementById('progress-text').textContent = Math.round(progress) + '%';
+        }
+
+        function unlockAchievement(id) {
+            if (!gameState.achievements.includes(id)) {
+                gameState.achievements.push(id);
+                document.getElementById(id).classList.add('unlocked');
+
+                // Dopamine: Flash effect
+                const ach = document.getElementById(id);
+                ach.style.transform = 'scale(1.1)';
+                setTimeout(() => {
+                    ach.style.transform = 'scale(1)';
+                }, 200);
+            }
+        }
+
+        function startTimer() {
+            setInterval(() => {
+                const elapsed = Math.floor((Date.now() - gameState.startTime) / 1000);
+                const mins = Math.floor(elapsed / 60).toString().padStart(2, '0');
+                const secs = (elapsed % 60).toString().padStart(2, '0');
+                document.getElementById('time-elapsed').textContent = `${mins}:${secs}`;
+            }, 1000);
+        }
+
+        // Input handling
+        terminalInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                executeCommand(terminalInput.value);
+                terminalInput.value = '';
+            }
+        });
+
+        // Matrix background effect
+        const matrixCanvas = document.getElementById('matrix-canvas');
+        const matrixCtx = matrixCanvas.getContext('2d');
+        matrixCanvas.width = window.innerWidth;
+        matrixCanvas.height = window.innerHeight;
+
+        const matrixChars = '01アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン';
+        const matrixDrops = [];
+
+        for (let i = 0; i < matrixCanvas.width / 20; i++) {
+            matrixDrops[i] = Math.random() * -100;
+        }
+
+        function drawMatrix() {
+            matrixCtx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+            matrixCtx.fillRect(0, 0, matrixCanvas.width, matrixCanvas.height);
+
+            matrixCtx.fillStyle = '#00ff41';
+            matrixCtx.font = '15px monospace';
+
+            for (let i = 0; i < matrixDrops.length; i++) {
+                const char = matrixChars[Math.floor(Math.random() * matrixChars.length)];
+                matrixCtx.fillText(char, i * 20, matrixDrops[i] * 20);
+
+                if (matrixDrops[i] * 20 > matrixCanvas.height && Math.random() > 0.975) {
+                    matrixDrops[i] = 0;
+                }
+                matrixDrops[i]++;
+            }
+        }
+
+        setInterval(drawMatrix, 50);
+
+        // Start boot sequence on load
+        window.addEventListener('load', runBootSequence);
+
+        // Keep focus on input
+        document.addEventListener('click', () => {
+            if (document.getElementById('terminal').style.display !== 'none') {
+                terminalInput.focus();
+            }
+        });
+    </script>
+</body>
+</html>
