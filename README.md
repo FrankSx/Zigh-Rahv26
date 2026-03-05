@@ -99,7 +99,6 @@ Upload to GitHub and enable Pages for free hosting!
 
 ## 🎯 Age Appropriate
 
-Designed for ages 11-12:
 - ✅ No scary jump scares (just fun animatronics)
 - ✅ Simple controls
 - ✅ Bright colors and emojis
